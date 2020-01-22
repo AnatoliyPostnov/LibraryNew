@@ -4,28 +4,31 @@ import com.postnov.library.Dto.BookDto;
 import com.postnov.library.Exceptions.FindBookByIdWasNotFoundException;
 import com.postnov.library.model.Book;
 
-import java.util.Optional;
 import java.util.Set;
 
 public interface BookService {
 
-    public void saveBooks(Set<BookDto> booksDto);
+    void saveBooks(Set<BookDto> booksDto);
 
-    public BookDto findBookByBookNameAndVolume(String name, Integer volume);
+    void deleteBookByBookNameAndVolume(String name, Integer volume);
 
-    public Set<BookDto> findBooksByAuthorNameAndSurname(String name, String surname) throws FindBookByIdWasNotFoundException;
+    void receivedBook(BookDto bookDto);
 
-    public void deleteBookByBookNameAndVolume(String name, Integer volume);
+    void returnBook(Long bookId);
 
-    Set<BookDto> getBooks(Long fromBookId, Long toBookId);
+    BookDto findBookByBookNameAndVolume(String name, Integer volume);
 
-    BookDto findBookById(Long Id) throws Exception;
+    BookDto findReceivedBookByBookNameAndVolume(String name, Integer volume);
 
-    Optional<Long> findMaximalId();
-
-    Long getBookIdByBookDto(BookDto bookDto);
+    BookDto findBookById(Long Id) throws FindBookByIdWasNotFoundException;
 
     Book findBookByNameAndVolume(String name, Integer volume);
 
-    void receivedBook(BookDto bookDto);
+    Long getBookIdByBookDto(BookDto bookDto);
+
+    Set<BookDto> findBooksByAuthorNameAndSurname(String name, String surname) throws FindBookByIdWasNotFoundException;
+
+    Set<BookDto> getBooks(Long fromBookId, Long toBookId);
+
+    Set<Long> findBooksIdByBooksName(String booksName);
 }

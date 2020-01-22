@@ -2,7 +2,6 @@ package com.postnov.library.model;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 public class Book {

@@ -3,24 +3,27 @@ package com.postnov.library.service.EntityService;
 import com.postnov.library.Dto.LibraryCardDto;
 import com.postnov.library.model.LibraryCard;
 
-import java.util.Optional;
+import java.util.Map;
 import java.util.Set;
 
 public interface LibraryCardService {
 
-    Optional<Long> findMaximalId();
-
-    LibraryCard save(LibraryCardDto libraryCardDto);
-
     void saveLibraryCards(Set<LibraryCardDto> libraryCardsDto);
-
-    LibraryCardDto getLibraryCardByPassportNumberAndSeries(String number, String series);
-
-    Set<LibraryCardDto> getLibraryCards(Long fromLibraryCardsId, Long toLibraryCardId);
-
-    LibraryCardDto findLibraryCardById(Long id) throws Exception;
 
     void deleteLibraryCard(String number, String series);
 
+    LibraryCardDto getLibraryCardDtoByPassportNumberAndSeries(String number, String series);
+
+    LibraryCardDto findLibraryCardById(Long id) throws Exception;
+
+    LibraryCard save(LibraryCardDto libraryCardDto);
+
+    LibraryCard getLibraryCardIdByPassportNumberAndSeries(String number, String series);
+
     Long getLibraryCardIdByLibraryCardDto(LibraryCardDto libraryCardDto);
+
+    Set<LibraryCardDto> getLibraryCards(Long fromLibraryCardsId, Long toLibraryCardId);
+
+    Map<String, Object> getMapLibraryCardWithClientWithPassportByPassportNumberAndSeries(
+            String number, String series);
 }

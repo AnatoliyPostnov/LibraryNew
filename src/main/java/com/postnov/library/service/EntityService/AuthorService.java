@@ -12,11 +12,9 @@ public interface AuthorService {
 
     void saveAuthors(Set<AuthorDto> authorsDto, Long book_id);
 
+    void deleteAuthorByBook(Book book);
+
     Set<Author> findAuthorsByBook(Book book);
 
     List<Author> findAuthorByNameAndSurname(String name, String surname);
-
-    void deleteAuthorByBook(Book book);
-
-    Optional<Long> findMaximalId();
 }

@@ -27,7 +27,7 @@ public class LibraryCardController {
     @GetMapping("/get/libraryCard")
     public LibraryCardDto getLibraryCard(@RequestParam("number") String number,
                                          @RequestParam("series") String series) {
-        return libraryCardService.getLibraryCardByPassportNumberAndSeries(number, series);
+        return libraryCardService.getLibraryCardDtoByPassportNumberAndSeries(number, series);
     }
 
     @ResponseStatus(HttpStatus.OK)

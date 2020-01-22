@@ -2,10 +2,7 @@ package com.postnov.library.service.EntityService.impl;
 
 import com.postnov.library.Dto.AuthorDto;
 import com.postnov.library.Dto.BookDto;
-import com.postnov.library.Exceptions.FindAuthorByNameAndAndSurnameWasNotFoundException;
-import com.postnov.library.Exceptions.FindBookByIdWasNotFoundException;
-import com.postnov.library.Exceptions.FindBookByNameAndVolumeWasNotFoundException;
-import com.postnov.library.Exceptions.FindBooksIdByAuthorIdWasNotFoundException;
+import com.postnov.library.Exceptions.*;
 import com.postnov.library.model.Author;
 import com.postnov.library.model.Book;
 import com.postnov.library.reposutory.BookRepository;
@@ -79,6 +76,15 @@ public class BookServiceImpl implements BookService {
         return makeBookDto(book);
     }
 
+    @Override
+    public BookDto findReceivedBookByBookNameAndVolume(String name, Integer volume) {
+        return convertServiceBook.convertToDto(
+                bookRepository.findReceivedBookByBookNameAndVolume(name, volume).orElseThrow(
+                () -> new FindReceivedBookWasNotFoundException("Received book with name: " + name +
+                        " volume: " + volume + " was not found exception")
+                ), BookDto.class);
+    }
+
 
     @Override
     public BookDto findBookById(Long Id) throws FindBookByIdWasNotFoundException {
@@ -87,11 +93,6 @@ public class BookServiceImpl implements BookService {
                         "Book with id: " + Id + " was not found"
                 ));
         return makeBookDto(book);
-    }
-
-    @Override
-    public Optional<Long> findMaximalId() {
-        return bookRepository.findMaximalId();
     }
 
     @Override
@@ -114,6 +115,16 @@ public class BookServiceImpl implements BookService {
     public void receivedBook(BookDto bookDto) {
         Long Id = findBookByNameAndVolume(bookDto.getName(), bookDto.getVolume()).getId();
         bookRepository.receivedBookById(Id);
+    }
+
+    @Override
+    public Set<Long> findBooksIdByBooksName(String booksName) {
+        return bookRepository.findBooksIdByBooksName(booksName);
+    }
+
+    @Override
+    public void returnBook(Long bookId) {
+        bookRepository.returnBook(bookId);
     }
 
     BookDto makeBookDto(Book book){

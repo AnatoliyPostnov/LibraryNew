@@ -17,7 +17,8 @@ public class ExceptionController {
             FindAuthorByNameAndAndSurnameWasNotFoundException.class,
             FindBookByIdWasNotFoundException.class,
             FindBookByNameAndVolumeWasNotFoundException.class,
-            FindBooksIdByAuthorIdWasNotFoundException.class
+            FindBooksIdByAuthorIdWasNotFoundException.class,
+            FindReceivedBookWasNotFoundException.class
     })
     protected ResponseEntity<RuntimeException> applicationException(RuntimeException ex) {
         return new ResponseEntity<>(ex, HttpStatus.NOT_FOUND);

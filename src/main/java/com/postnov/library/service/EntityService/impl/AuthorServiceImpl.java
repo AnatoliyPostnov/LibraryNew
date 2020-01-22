@@ -74,8 +74,4 @@ public class AuthorServiceImpl implements AuthorService {
         }
     }
 
-    @Override
-    public Optional<Long> findMaximalId() {
-        return authorRepository.findMaximalId();
-    }
 }

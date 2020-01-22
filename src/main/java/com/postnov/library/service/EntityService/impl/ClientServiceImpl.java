@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -29,11 +28,6 @@ public class ClientServiceImpl implements ClientService {
         this.clientRepository = clientRepository;
         this.passportService = passportService;
         this.convertServiceClient = convertServiceClient;
-    }
-
-    @Override
-    public Optional<Long> findMaximalId() {
-        return clientRepository.findMaximalId();
     }
 
     @Override

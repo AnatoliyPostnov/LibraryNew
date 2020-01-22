@@ -8,7 +8,6 @@ import com.postnov.library.service.OtherService.ConvertService;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -22,11 +21,6 @@ public class PassportServiceImpl implements PassportService {
                                ConvertService<PassportDto, Passport> convertServicePassport) {
         this.passportRepository = passportRepository;
         this.convertServicePassport = convertServicePassport;
-    }
-
-    @Override
-    public Optional<Long> findMaximalId() {
-        return passportRepository.findMaximalId();
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.postnov.library.service.OtherService;
 
-import java.util.List;
 import java.util.Set;
 
 public interface ConvertService<Dto, NotDto> {

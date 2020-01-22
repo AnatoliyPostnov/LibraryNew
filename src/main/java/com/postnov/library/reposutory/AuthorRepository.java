@@ -16,8 +16,5 @@ public interface AuthorRepository extends JpaRepository<Author, Long> {
 
     List<Author> findAuthorByNameAndSurname(String name, String surname);
 
-    @Query(value = "select max(a.id) from Author a")
-    Optional<Long> findMaximalId();
-
     void deleteAuthorById(Long Id);
 }

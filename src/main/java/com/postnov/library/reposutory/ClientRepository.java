@@ -8,9 +8,6 @@ import java.util.Optional;
 
 public interface ClientRepository extends JpaRepository<Client, Long> {
 
-    @Query(value = "select max(cl.id) from Client cl")
-    Optional<Long> findMaximalId();
-
     Optional<Client> findClientByPassportId(Long passportId);
 
     Optional<Client> findClientById(Long Id);

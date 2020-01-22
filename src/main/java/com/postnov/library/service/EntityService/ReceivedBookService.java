@@ -1,13 +1,14 @@
 package com.postnov.library.service.EntityService;
 
 import com.postnov.library.Dto.ReceivedBookDto;
-import com.postnov.library.model.ReceivedBook;
 
-import java.util.Optional;
+import java.util.Set;
 
 public interface ReceivedBookService {
 
-    Optional<Long> findMaximalId();
-
     void receivedBook(ReceivedBookDto receivedBookDto);
+
+    void returnBooks(String number, String series, String booksName);
+
+    Set<ReceivedBookDto> getReceivedBooksByPassportSNumberAndSeries(String number, String series);
 }

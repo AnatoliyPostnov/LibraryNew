@@ -8,13 +8,12 @@ import java.util.Set;
 
 public interface Book_AuthorService {
 
-    public void update(List<Long> authors_id, Long book_id);
-
-    Set<Long> findAuthorsIdByBookId(Long book_id);
-
-    Optional<Long> findBooksIdByAuthorId(Long author_id);
+    void update(List<Long> authors_id, Long book_id);
 
     void deleteBook_AuthorByAuthor_id(Long author_id);
 
-    Optional<Long> findMaximalId();
+    Optional<Long> findBooksIdByAuthorId(Long author_id);
+
+    Set<Long> findAuthorsIdByBookId(Long book_id);
+
 }

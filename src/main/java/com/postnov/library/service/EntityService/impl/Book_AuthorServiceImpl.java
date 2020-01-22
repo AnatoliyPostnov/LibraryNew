@@ -42,8 +42,4 @@ public class Book_AuthorServiceImpl implements Book_AuthorService {
         book_authorRepository.deleteBook_AuthorByAuthor_id(author_id);
     }
 
-    @Override
-    public  Optional<Long> findMaximalId() {
-        return book_authorRepository.findMaximalId();
-    }
 }
