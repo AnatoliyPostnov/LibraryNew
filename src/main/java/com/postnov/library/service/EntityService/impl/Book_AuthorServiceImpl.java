@@ -3,7 +3,6 @@ package com.postnov.library.service.EntityService.impl;
 import com.postnov.library.model.Book_Author;
 import com.postnov.library.reposutory.Book_AuthorRepository;
 import com.postnov.library.service.EntityService.Book_AuthorService;
-import com.postnov.library.service.OtherService.Impl.CountIdServiceImpl;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -24,7 +23,7 @@ public class Book_AuthorServiceImpl implements Book_AuthorService {
     @Override
     public void update(List<Long> authors_id, Long book_id) {
         for (Long author_id : authors_id){
-            book_authorRepository.save(new Book_Author(CountIdServiceImpl.Id++, book_id, author_id));
+            book_authorRepository.save(new Book_Author(book_id, author_id));
         }
     }
 

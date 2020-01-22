@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 public class Book {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column

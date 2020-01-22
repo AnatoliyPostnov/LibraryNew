@@ -9,8 +9,6 @@ import com.postnov.library.service.EntityService.BookService;
 import com.postnov.library.service.EntityService.LibraryCardService;
 import com.postnov.library.service.EntityService.ReceivedBookService;
 import com.postnov.library.service.OtherService.ConvertService;
-import com.postnov.library.service.OtherService.CountIdService;
-import com.postnov.library.service.OtherService.Impl.CountIdServiceImpl;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -55,7 +53,6 @@ public class ReceivedBookServiceImpl implements ReceivedBookService {
                 ReceivedBook.class);
         receivedBook.setBookId(bookId);
         receivedBook.setLibraryCardId(libraryCardId);
-        receivedBook.setId(CountIdServiceImpl.Id++);
         receivedBookRepository.save(receivedBook);
     }
 }

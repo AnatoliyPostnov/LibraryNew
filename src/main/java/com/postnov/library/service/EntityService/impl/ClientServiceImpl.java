@@ -8,7 +8,6 @@ import com.postnov.library.reposutory.ClientRepository;
 import com.postnov.library.service.EntityService.ClientService;
 import com.postnov.library.service.EntityService.PassportService;
 import com.postnov.library.service.OtherService.ConvertService;
-import com.postnov.library.service.OtherService.Impl.CountIdServiceImpl;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -38,12 +37,10 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public void save(ClientDto clientDto) {
-        passportService.save(clientDto.getPassport());
+    public Client save(ClientDto clientDto) {
         Client client = convertServiceClient.convertFromDto(clientDto, Client.class);
-        client.setPassportId(CountIdServiceImpl.Id - 1);
-        client.setId(CountIdServiceImpl.Id++);
-        clientRepository.save(client);
+        client.setPassportId(passportService.save(clientDto.getPassport()).getId());
+        return clientRepository.save(client);
     }
 
     @Override

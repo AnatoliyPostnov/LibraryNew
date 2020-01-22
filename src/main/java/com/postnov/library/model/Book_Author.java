@@ -1,14 +1,12 @@
 package com.postnov.library.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class Book_Author {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long Id;
 
     @Column
@@ -19,8 +17,7 @@ public class Book_Author {
 
     public Book_Author(){}
 
-    public Book_Author(Long id, Long book_id, Long author_id) {
-        Id = id;
+    public Book_Author(Long book_id, Long author_id) {
         this.book_id = book_id;
         this.author_id = author_id;
     }

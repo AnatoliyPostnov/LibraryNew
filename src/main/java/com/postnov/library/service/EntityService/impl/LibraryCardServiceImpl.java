@@ -10,7 +10,6 @@ import com.postnov.library.reposutory.LibraryCardRepository;
 import com.postnov.library.service.EntityService.ClientService;
 import com.postnov.library.service.EntityService.LibraryCardService;
 import com.postnov.library.service.OtherService.ConvertService;
-import com.postnov.library.service.OtherService.Impl.CountIdServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -55,13 +54,11 @@ public class LibraryCardServiceImpl implements LibraryCardService {
     }
 
     @Override
-    public void save(LibraryCardDto libraryCardDto) {
-        clientService.save(libraryCardDto.getClient());
+    public LibraryCard save(LibraryCardDto libraryCardDto) {
         LibraryCard libraryCard = convertServiceLibraryCard
                 .convertFromDto(libraryCardDto, LibraryCard.class);
-        libraryCard.setClientId(CountIdServiceImpl.Id - 1);
-        libraryCard.setId(CountIdServiceImpl.Id++);
-        libraryCardRepository.save(libraryCard);
+        libraryCard.setClientId(clientService.save(libraryCardDto.getClient()).getId());
+        return libraryCardRepository.save(libraryCard);
     }
 
     @Override

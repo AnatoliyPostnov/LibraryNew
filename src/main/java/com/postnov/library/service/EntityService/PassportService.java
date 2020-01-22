@@ -9,7 +9,7 @@ public interface PassportService {
 
     Optional<Long> findMaximalId();
 
-    void save(PassportDto passportDto);
+    Passport save(PassportDto passportDto);
 
     Passport getPassportByPassportNumberAndSeries(String number, String series);
 

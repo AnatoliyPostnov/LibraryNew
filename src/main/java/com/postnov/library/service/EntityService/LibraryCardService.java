@@ -10,7 +10,7 @@ public interface LibraryCardService {
 
     Optional<Long> findMaximalId();
 
-    void save(LibraryCardDto libraryCardDto);
+    LibraryCard save(LibraryCardDto libraryCardDto);
 
     void saveLibraryCards(Set<LibraryCardDto> libraryCardsDto);
 

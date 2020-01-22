@@ -13,7 +13,6 @@ import com.postnov.library.service.EntityService.AuthorService;
 import com.postnov.library.service.EntityService.BookService;
 import com.postnov.library.service.EntityService.Book_AuthorService;
 import com.postnov.library.service.OtherService.ConvertService;
-import com.postnov.library.service.OtherService.Impl.CountIdServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -60,9 +59,9 @@ public class BookServiceImpl implements BookService {
                     bookDto.getVolume())
                     .isPresent()) {
                 Book book = convertServiceBook.convertFromDto(bookDto, Book.class);
-                book.setId(CountIdServiceImpl.Id++);
-                bookRepository.save(book);
-                authorService.saveAuthors(bookDto.getAuthors(), book.getId());
+                authorService.saveAuthors(
+                        bookDto.getAuthors(),
+                        bookRepository.save(book).getId());
             }
         }
     }

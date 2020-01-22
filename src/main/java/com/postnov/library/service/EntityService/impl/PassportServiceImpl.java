@@ -5,7 +5,6 @@ import com.postnov.library.model.Passport;
 import com.postnov.library.reposutory.PassportRepository;
 import com.postnov.library.service.EntityService.PassportService;
 import com.postnov.library.service.OtherService.ConvertService;
-import com.postnov.library.service.OtherService.Impl.CountIdServiceImpl;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -31,10 +30,9 @@ public class PassportServiceImpl implements PassportService {
     }
 
     @Override
-    public void save(PassportDto passportDto) {
+    public Passport save(PassportDto passportDto) {
         Passport passport = convertServicePassport.convertFromDto(passportDto, Passport.class);
-        passport.setId(CountIdServiceImpl.Id++);
-        passportRepository.save(passport);
+        return passportRepository.save(passport);
     }
 
     @Override

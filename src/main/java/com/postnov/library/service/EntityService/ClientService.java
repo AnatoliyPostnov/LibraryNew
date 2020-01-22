@@ -10,7 +10,7 @@ public interface ClientService {
 
     Optional<Long> findMaximalId();
 
-    void save(ClientDto clientDto);
+    Client save(ClientDto clientDto);
 
     Map<String, Object> getMapClientWithPassportByPassportNumberAndSeries(
             String number, String series);

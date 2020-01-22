@@ -8,7 +8,6 @@ import com.postnov.library.reposutory.AuthorRepository;
 import com.postnov.library.service.EntityService.AuthorService;
 import com.postnov.library.service.EntityService.Book_AuthorService;
 import com.postnov.library.service.OtherService.ConvertService;
-import com.postnov.library.service.OtherService.Impl.CountIdServiceImpl;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -39,12 +38,9 @@ public class AuthorServiceImpl implements AuthorService {
         List<Long> authors_id = new ArrayList<>();
 
         for(AuthorDto authorDto : authors){
-            Author author = convertService.convertFromDto(authorDto, Author.class);
-            author.setId(CountIdServiceImpl.Id++);
-            authors_id.add(author.getId());
-            authorRepository.save(author);
+            Author author = convertService.convertFromDto(authorDto, Author.class);;
+            authors_id.add(authorRepository.save(author).getId());
         }
-
         book_authorService.update(authors_id, book_id);
     }
 
