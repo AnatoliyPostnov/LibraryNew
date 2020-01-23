@@ -18,38 +18,43 @@ public class BookController {
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @GetMapping(value = "book/by/name/and/volume")
+    public BookDto getBookByNameAndVolume(
+            @RequestParam("name") String name,
+            @RequestParam("volume") Integer volume){
+        return bookService.getBookDtoByBookNameAndVolume(name, volume);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping(value = "/books/by/fromBookId/and/toBookId")
+    public Set<BookDto> getBooksFromBookIdToBookId(
+            @RequestParam("fromBookId") Long fromBookId,
+            @RequestParam("toBookId") Long toBookId) {
+        return bookService.getBooksDto(fromBookId, toBookId);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping(value = "books/by/author/name/and/surname")
+    public Set<BookDto> getBooksByAuthorNameAndSurname(
+            @RequestParam("name") String name,
+            @RequestParam("surname") String surname)
+            throws FindBookByIdWasNotFoundException {
+        return bookService.getBooksDtoByAuthorNameAndSurname(name, surname);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
     @PostMapping(value = "add/books")
-    public void addBooks(@RequestBody Set<BookDto> booksDto) {
+    public void addBooks(
+            @RequestBody Set<BookDto> booksDto) {
         bookService.saveBooks(booksDto);
     }
 
-    @ResponseStatus(HttpStatus.OK)
-    @GetMapping(value = "find/book/by/name/and/volume")
-    public BookDto getBook(@RequestParam("name") String name,
-                           @RequestParam("volume") Integer volume){
-        return bookService.findBookByBookNameAndVolume(name, volume);
-    }
-
-    @ResponseStatus(HttpStatus.OK)
-    @GetMapping(value = "find/books/by/author/name/and/surname")
-    public Set<BookDto> findBooksByAuthorNameAndSurname(@RequestParam("name") String name,
-                                                       @RequestParam("surname") String surname)
-            throws FindBookByIdWasNotFoundException {
-        return bookService.findBooksByAuthorNameAndSurname(name, surname);
-    }
-
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @DeleteMapping(value = "/delete/book")
-    public void deletedBookByBookNameAndVolume(@RequestParam("name") String name,
-                                               @RequestParam("volume") Integer volume) {
+    @DeleteMapping(value = "/book/by/name/and/volume")
+    public void deletedBookByBookNameAndVolume(
+            @RequestParam("name") String name,
+            @RequestParam("volume") Integer volume) {
         bookService.deleteBookByBookNameAndVolume(name, volume);
-    }
-
-    @ResponseStatus(HttpStatus.OK)
-    @GetMapping(value = "/get/books")
-    public Set<BookDto> getBooks(@RequestParam("fromBookId") Long fromBookId,
-                                  @RequestParam("toBookId") Long toBookId) {
-        return bookService.getBooks(fromBookId, toBookId);
     }
 
 }

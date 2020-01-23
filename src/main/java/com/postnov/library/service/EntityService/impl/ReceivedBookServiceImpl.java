@@ -1,8 +1,11 @@
 package com.postnov.library.service.EntityService.impl;
 
+import com.fasterxml.jackson.databind.ser.std.StringSerializer;
 import com.postnov.library.Dto.BookDto;
 import com.postnov.library.Dto.LibraryCardDto;
 import com.postnov.library.Dto.ReceivedBookDto;
+import com.postnov.library.Exceptions.FindPassportByPassportNumberAndSeriesWasNotFoundException;
+import com.postnov.library.model.LibraryCard;
 import com.postnov.library.model.ReceivedBook;
 import com.postnov.library.reposutory.ReceivedBookRepository;
 import com.postnov.library.service.EntityService.BookService;
@@ -14,6 +17,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 @Service
@@ -28,18 +32,23 @@ public class ReceivedBookServiceImpl implements ReceivedBookService {
 
     private final ConvertService<ReceivedBookDto, ReceivedBook> convertServiceReceivedBook;
 
+    private final ConvertService<LibraryCardDto, LibraryCard> convertServiceLibraryCard;
+
     public ReceivedBookServiceImpl(ReceivedBookRepository receivedBookRepository,
                                    LibraryCardService libraryCardService,
                                    BookService bookService,
-                                   ConvertService<ReceivedBookDto, ReceivedBook> convertServiceReceivedBook) {
+                                   ConvertService<ReceivedBookDto, ReceivedBook> convertServiceReceivedBook,
+                                   ConvertService<LibraryCardDto, LibraryCard> convertServiceLibraryCard) {
         this.receivedBookRepository = receivedBookRepository;
         this.libraryCardService = libraryCardService;
         this.bookService = bookService;
         this.convertServiceReceivedBook = convertServiceReceivedBook;
+        this.convertServiceLibraryCard = convertServiceLibraryCard;
     }
 
     @Override
-    public void receivedBook(ReceivedBookDto receivedBookDto) {
+    public void receivedBook(ReceivedBookDto receivedBookDto)
+            throws FindPassportByPassportNumberAndSeriesWasNotFoundException {
         LibraryCardDto libraryCardDto = receivedBookDto.getLibraryCard();
         BookDto bookDto = receivedBookDto.getBook();
         Long libraryCardId = libraryCardService.getLibraryCardIdByLibraryCardDto(libraryCardDto);
@@ -50,16 +59,18 @@ public class ReceivedBookServiceImpl implements ReceivedBookService {
                 ReceivedBook.class);
         receivedBook.setBookId(bookId);
         receivedBook.setLibraryCardId(libraryCardId);
+        receivedBook.setDateOfBookReceiving(LocalDate.now());
         receivedBookRepository.save(receivedBook);
     }
 
     @Override
-    public void returnBooks(String number, String series, String booksName) {
+    public void returnBooks(String number, String series, String bookName)
+            throws FindPassportByPassportNumberAndSeriesWasNotFoundException {
         Long libraryCardId =
                 libraryCardService
-                        .getLibraryCardIdByPassportNumberAndSeries(number, series)
+                        .getLibraryCardByPassportNumberAndSeries(number, series)
                         .getId();
-        Set<Long> booksId = bookService.findBooksIdByBooksName(booksName);
+        Set<Long> booksId = bookService.getReceivedBooksIdByBookName(bookName);
         for (Long bookId : booksId) {
             receivedBookRepository
                     .findReceivedBook(libraryCardId, bookId)
@@ -69,14 +80,52 @@ public class ReceivedBookServiceImpl implements ReceivedBookService {
     }
 
     @Override
-    public Set<ReceivedBookDto> getReceivedBooksByPassportSNumberAndSeries(String number, String series) {
-        Long libraryCardId = libraryCardService.getLibraryCardIdByPassportNumberAndSeries(number, series).getId();
-        Set<ReceivedBook> receivedBooks = receivedBookRepository.findReceivedBookByLibraryCardId(libraryCardId);
+    public Set<ReceivedBookDto> getReceivedBooksByPassportNumberAndSeries(String number, String series)
+            throws FindPassportByPassportNumberAndSeriesWasNotFoundException {
+        return getReceivedBooks(number, series, false);
+    }
+
+    @Override
+    public Set<ReceivedBookDto> getHistoryReceivedBooksByPassportNumberAndSeries(
+            String number, String series)
+            throws FindPassportByPassportNumberAndSeriesWasNotFoundException {
+        return getReceivedBooks(number, series, true);
+    }
+
+    @Override
+    public Set<ReceivedBookDto> getReceivedBooks(String number, String series, Boolean historyOrNot)
+            throws FindPassportByPassportNumberAndSeriesWasNotFoundException {
+        Map<String, Object> libraryCardWithLibraryCardDto =
+                libraryCardService.getMapLibraryCardWithLibraryCardDtoByPassportNumberAndSeries(number, series);
+        LibraryCard libraryCard = (LibraryCard) libraryCardWithLibraryCardDto.get("LibraryCard");
+
+        Set<ReceivedBook> receivedBooks;
+        if(historyOrNot) {
+            receivedBooks = receivedBookRepository.findHistoryReceivedBookByLibraryCardId(libraryCard.getId());
+        }else {
+            receivedBooks = receivedBookRepository.findReceivedBookByLibraryCardId(libraryCard.getId());
+        }
+
         Set<ReceivedBookDto> receivedBooksDto = new HashSet<>();
         for (ReceivedBook receivedBook : receivedBooks) {
-            //дописать реализацию
-            receivedBooksDto.add(
-                    convertServiceReceivedBook.convertToDto(receivedBook, ReceivedBookDto.class));
+            ReceivedBookDto receivedBookDto = convertServiceReceivedBook.convertToDto(receivedBook, ReceivedBookDto.class);
+            receivedBookDto.setBook(bookService.getReceivedBookDtoById(receivedBook.getBookId()));
+            receivedBookDto.setLibraryCard((LibraryCardDto) libraryCardWithLibraryCardDto.get("LibraryCardDto"));
+            receivedBooksDto.add(receivedBookDto);
+        }
+        return receivedBooksDto;
+    }
+
+    @Override
+    public Set<ReceivedBookDto> getAllReceivedBook(Long fromReceivedBookId, Long toReceivedBookId) throws Exception {
+        Set<ReceivedBook> receivedBooks =
+                receivedBookRepository.findAllReceivedBook(fromReceivedBookId, toReceivedBookId);
+        Set<ReceivedBookDto> receivedBooksDto = new HashSet<>();
+        for (ReceivedBook receivedBook : receivedBooks) {
+            ReceivedBookDto receivedBookDto = convertServiceReceivedBook.convertToDto(receivedBook, ReceivedBookDto.class);
+            receivedBookDto.setBook(bookService.getReceivedBookDtoById(receivedBook.getBookId()));
+            receivedBookDto.setLibraryCard(libraryCardService.getLibraryCardDtoById(receivedBook.getLibraryCardId()));
+            receivedBooksDto.add(receivedBookDto);
         }
         return receivedBooksDto;
     }

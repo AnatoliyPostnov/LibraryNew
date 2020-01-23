@@ -13,25 +13,32 @@ import java.util.Set;
 public interface BookRepository extends JpaRepository<Book, Long> {
 
     @Query(value = "select b from Book b " +
-            "WHERE b.name = :bookName and b.volume = :volume and b.isReceivedBook = 'true'")
+            "WHERE b.name = :bookName and b.volume = :volume and b.isReceivedBook = 'false'")
     Optional<Book> findBookByNameAndVolume(String bookName, Integer volume);
 
     @Query(value = "select b from Book b " +
-            "WHERE b.name = :bookName and b.volume = :volume and b.isReceivedBook = 'false'")
+            "WHERE b.name = :bookName and b.volume = :volume and b.isReceivedBook = 'true'")
     Optional<Book> findReceivedBookByBookNameAndVolume(String bookName, Integer volume);
 
-    Optional<Book> findBookById(Long id);
+    @Query(value = "select b from Book b " +
+            "WHERE b.id = :Id and b.isReceivedBook = 'true'")
+    Optional<Book> findReceivedBookById(Long Id);
+
+    @Query(value = "select b from Book b " +
+            "WHERE b.id = :Id and b.isReceivedBook = 'false'")
+    Optional<Book> findBookById(Long Id);
 
     void deleteBookByNameAndVolume(String name, Integer volume);
 
     @Modifying
-    @Query(value = "update Book set isReceivedBook = 'false' where id = :Id")
+    @Query(value = "update Book set isReceivedBook = 'true' where id = :Id")
     void receivedBookById(Long Id);
 
-    @Query(value = "select id from Book where name = :booksName and isReceivedBook = 'false'")
-    Set<Long> findBooksIdByBooksName(String booksName);
+    @Query(value = "select id from Book where name = :booksName and isReceivedBook = 'true'")
+    Set<Long> findReceivedBooksIdByBooksName(String booksName);
 
     @Modifying
-    @Query(value = "update Book set isReceivedBook = 'true' where id = :bookId")
+    @Query(value = "update Book set isReceivedBook = 'false' where id = :bookId")
     void returnBook(Long bookId);
+
 }

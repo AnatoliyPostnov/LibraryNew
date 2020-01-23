@@ -16,19 +16,30 @@ public interface BookService {
 
     void returnBook(Long bookId);
 
-    BookDto findBookByBookNameAndVolume(String name, Integer volume);
+    BookDto getBookDtoByBookNameAndVolume(String name, Integer volume);
 
-    BookDto findReceivedBookByBookNameAndVolume(String name, Integer volume);
+    BookDto getReceivedBookDtoByBookNameAndVolume(String name, Integer volume);
 
-    BookDto findBookById(Long Id) throws FindBookByIdWasNotFoundException;
+    BookDto getReceivedBookDtoById(Long Id);
 
-    Book findBookByNameAndVolume(String name, Integer volume);
+    BookDto getBookDtoById(Long Id) throws FindBookByIdWasNotFoundException;
+
+    BookDto makeBookDto(Book book);
+
+    Book getBookByBookNameAndVolume(String name, Integer volume);
+
+    Book getReceivedBookByBookNameAndVolume(String name, Integer volume);
+
+    Book getBookById(Long Id) throws FindBookByIdWasNotFoundException;
+
+    Book getReceivedBookById(Long Id);
 
     Long getBookIdByBookDto(BookDto bookDto);
 
-    Set<BookDto> findBooksByAuthorNameAndSurname(String name, String surname) throws FindBookByIdWasNotFoundException;
+    Set<BookDto> getBooksDtoByAuthorNameAndSurname(String name, String surname) throws FindBookByIdWasNotFoundException;
 
-    Set<BookDto> getBooks(Long fromBookId, Long toBookId);
+    Set<BookDto> getBooksDto(Long fromBookId, Long toBookId);
 
-    Set<Long> findBooksIdByBooksName(String booksName);
+    Set<Long> getReceivedBooksIdByBookName(String booksName);
+
 }

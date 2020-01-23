@@ -1,6 +1,7 @@
 package com.postnov.library.controllers;
 
 import com.postnov.library.Dto.LibraryCardDto;
+import com.postnov.library.Exceptions.FindPassportByPassportNumberAndSeriesWasNotFoundException;
 import com.postnov.library.service.EntityService.LibraryCardService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -19,28 +20,37 @@ public class LibraryCardController {
 
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/add/libraryCards")
-    public void addLibraryCards(@RequestBody Set<LibraryCardDto> libraryCardsDto) {
+    public void addLibraryCards(
+            @RequestBody Set<LibraryCardDto> libraryCardsDto)
+            throws FindPassportByPassportNumberAndSeriesWasNotFoundException {
         libraryCardService.saveLibraryCards(libraryCardsDto);
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/get/libraryCard")
-    public LibraryCardDto getLibraryCard(@RequestParam("number") String number,
-                                         @RequestParam("series") String series) {
-        return libraryCardService.getLibraryCardDtoByPassportNumberAndSeries(number, series);
+    @GetMapping("/libraryCard/by/passport/number/and/series")
+    public LibraryCardDto getLibraryCardByPassportNumberAndSeries(
+            @RequestParam("number") String number,
+            @RequestParam("series") String series)
+            throws FindPassportByPassportNumberAndSeriesWasNotFoundException {
+        return (LibraryCardDto) libraryCardService
+                .getMapLibraryCardWithLibraryCardDtoByPassportNumberAndSeries(number, series)
+                .get("LibraryCardDto");
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/get/libraryCards")
-    public Set<LibraryCardDto> getLibraryCards(@RequestParam("fromLibraryCardsId") Long fromLibraryCardsId,
-                                               @RequestParam("toLibraryCardsId") Long toLibraryCardId) {
+    @GetMapping("/libraryCards/fromLibraryCardsId/and/toLibraryCardId")
+    public Set<LibraryCardDto> getLibraryCardsByFromLibraryCardsIdToLibraryCardsId(
+            @RequestParam("fromLibraryCardsId") Long fromLibraryCardsId,
+            @RequestParam("toLibraryCardsId") Long toLibraryCardId) {
         return libraryCardService.getLibraryCards(fromLibraryCardsId, toLibraryCardId);
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @DeleteMapping("/delete/libraryCard")
-    public void deleteLibraryCard(@RequestParam("number") String number,
-                                  @RequestParam("series") String series){
+    @DeleteMapping("/libraryCard/by/passport/number/and/series")
+    public void deleteLibraryCardByPassportNumberAndSeries(
+            @RequestParam("number") String number,
+            @RequestParam("series") String series)
+            throws FindPassportByPassportNumberAndSeriesWasNotFoundException {
         libraryCardService.deleteLibraryCard(number, series);
     }
 

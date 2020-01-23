@@ -1,14 +1,25 @@
 package com.postnov.library.service.EntityService;
 
 import com.postnov.library.Dto.ReceivedBookDto;
+import com.postnov.library.Exceptions.FindPassportByPassportNumberAndSeriesWasNotFoundException;
 
 import java.util.Set;
 
 public interface ReceivedBookService {
 
-    void receivedBook(ReceivedBookDto receivedBookDto);
+    void receivedBook(ReceivedBookDto receivedBookDto)
+            throws FindPassportByPassportNumberAndSeriesWasNotFoundException;
 
-    void returnBooks(String number, String series, String booksName);
+    void returnBooks(String number, String series, String booksName)
+            throws FindPassportByPassportNumberAndSeriesWasNotFoundException;
 
-    Set<ReceivedBookDto> getReceivedBooksByPassportSNumberAndSeries(String number, String series);
+    Set<ReceivedBookDto> getReceivedBooksByPassportNumberAndSeries(String number, String series)
+            throws FindPassportByPassportNumberAndSeriesWasNotFoundException;
+
+    Set<ReceivedBookDto> getHistoryReceivedBooksByPassportNumberAndSeries(
+            String number, String series) throws FindPassportByPassportNumberAndSeriesWasNotFoundException;
+
+    Set<ReceivedBookDto> getAllReceivedBook(Long fromReceivedBookId, Long toReceivedBookId) throws Exception;
+
+    Set<ReceivedBookDto> getReceivedBooks(String number, String series, Boolean historyOrNot) throws FindPassportByPassportNumberAndSeriesWasNotFoundException;
 }

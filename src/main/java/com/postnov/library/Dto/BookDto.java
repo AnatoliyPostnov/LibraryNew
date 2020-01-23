@@ -1,6 +1,9 @@
 package com.postnov.library.Dto;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -9,15 +12,18 @@ import java.util.Set;
 public class BookDto implements Serializable {
 
     @NotNull
+    @NotBlank
     private String name;
 
     @NotNull
     private Integer volume;
 
     @NotNull
+    @Past
     private LocalDate dateOfPublishing;
 
     @NotNull
+    @NotEmpty
     private Set<AuthorDto> authors = new HashSet<>();
 
     public LocalDate getDateOfPublishing() {

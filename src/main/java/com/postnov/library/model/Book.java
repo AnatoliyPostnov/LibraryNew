@@ -30,10 +30,10 @@ public class Book {
         this.name = name;
         this.volume = volume;
         this.dateOfPublishing = dateOfPublishing;
-        isReceivedBook = true;
+        isReceivedBook = false;
     }
 
-    public Book(){isReceivedBook = true;}
+    public Book(){isReceivedBook = false;}
 
     public Long getId() {
         return id;

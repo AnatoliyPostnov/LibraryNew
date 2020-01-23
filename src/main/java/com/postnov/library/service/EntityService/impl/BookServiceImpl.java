@@ -64,44 +64,76 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public BookDto findBookByBookNameAndVolume(String name, Integer volume) {
-
-        Book book = bookRepository
-                .findBookByNameAndVolume(name, volume)
-                .orElseThrow(
-                        () -> new RuntimeException(
-                                "Book was not found")
-                );
-
-        return makeBookDto(book);
+    public void deleteBookByBookNameAndVolume(String name, Integer volume) {
+        Book book = getBookByBookNameAndVolume(name, volume);
+        authorService.deleteAuthorByBook(book);
+        bookRepository.deleteBookByNameAndVolume(name, volume);
     }
 
     @Override
-    public BookDto findReceivedBookByBookNameAndVolume(String name, Integer volume) {
-        return convertServiceBook.convertToDto(
-                bookRepository.findReceivedBookByBookNameAndVolume(name, volume).orElseThrow(
+    public void receivedBook(BookDto bookDto) {
+        Long Id = getBookByBookNameAndVolume(bookDto.getName(), bookDto.getVolume()).getId();
+        bookRepository.receivedBookById(Id);
+    }
+
+    @Override
+    public void returnBook(Long bookId) {
+        bookRepository.returnBook(bookId);
+    }
+
+    @Override
+    public BookDto getBookDtoByBookNameAndVolume(String name, Integer volume) {
+        return makeBookDto(getBookByBookNameAndVolume(name, volume));
+    }
+
+    @Override
+    public BookDto getReceivedBookDtoByBookNameAndVolume(String name, Integer volume) {
+        return makeBookDto(getReceivedBookByBookNameAndVolume(name, volume));
+    }
+
+    @Override
+    public BookDto getReceivedBookDtoById(Long Id) {
+        return makeBookDto(getReceivedBookById(Id));
+    }
+
+    @Override
+    public BookDto getBookDtoById(Long Id) throws FindBookByIdWasNotFoundException {
+        return makeBookDto(getBookById(Id));
+    }
+
+    @Override
+    public BookDto makeBookDto(Book book){
+        BookDto bookDto = convertServiceBook.convertToDto(book,
+                BookDto.class);
+
+        bookDto.setAuthors(
+                convertServiceAuthor.convertToSetDto(
+                        authorService.getAuthorsByBook(book),
+                        AuthorDto.class)
+        );
+        return bookDto;
+    }
+
+    @Override
+    public Book getReceivedBookById(Long Id) {
+        return bookRepository.findReceivedBookById(Id)
+                .orElseThrow(
+                        () -> new FindReceivedBookWasNotFoundException(
+                                "Received book with id: " + Id +
+                                        " was not found exception")
+                );
+    }
+
+    @Override
+    public Book getReceivedBookByBookNameAndVolume(String name, Integer volume){
+        return bookRepository.findReceivedBookByBookNameAndVolume(name, volume).orElseThrow(
                 () -> new FindReceivedBookWasNotFoundException("Received book with name: " + name +
                         " volume: " + volume + " was not found exception")
-                ), BookDto.class);
-    }
-
-
-    @Override
-    public BookDto findBookById(Long Id) throws FindBookByIdWasNotFoundException {
-        Book book = bookRepository.findBookById(Id)
-                .orElseThrow(() -> new FindBookByIdWasNotFoundException(
-                        "Book with id: " + Id + " was not found"
-                ));
-        return makeBookDto(book);
+        );
     }
 
     @Override
-    public Long getBookIdByBookDto(BookDto bookDto) {
-        return findBookByNameAndVolume(bookDto.getName(), bookDto.getVolume()).getId();
-    }
-
-    @Override
-    public Book findBookByNameAndVolume(String name, Integer volume) {
+    public Book getBookByBookNameAndVolume(String name, Integer volume) {
         return bookRepository.findBookByNameAndVolume(name, volume)
                 .orElseThrow(
                         () -> new FindBookByNameAndVolumeWasNotFoundException(
@@ -112,93 +144,48 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void receivedBook(BookDto bookDto) {
-        Long Id = findBookByNameAndVolume(bookDto.getName(), bookDto.getVolume()).getId();
-        bookRepository.receivedBookById(Id);
+    public Book getBookById(Long Id) throws FindBookByIdWasNotFoundException {
+        return bookRepository.findBookById(Id)
+                .orElseThrow(() -> new FindBookByIdWasNotFoundException(
+                        "Book with id: " + Id + " was not found"
+                ));
     }
 
     @Override
-    public Set<Long> findBooksIdByBooksName(String booksName) {
-        return bookRepository.findBooksIdByBooksName(booksName);
+    public Long getBookIdByBookDto(BookDto bookDto) {
+        return getBookByBookNameAndVolume(bookDto.getName(), bookDto.getVolume()).getId();
     }
 
     @Override
-    public void returnBook(Long bookId) {
-        bookRepository.returnBook(bookId);
-    }
-
-    BookDto makeBookDto(Book book){
-        BookDto bookDto = convertServiceBook.convertToDto(book,
-                BookDto.class);
-
-        bookDto.setAuthors(
-                convertServiceAuthor.convertToSetDto(
-                        authorService.findAuthorsByBook(book),
-                        AuthorDto.class)
-        );
-        return bookDto;
+    public Set<Long> getReceivedBooksIdByBookName(String bookName) {
+        return bookRepository.findReceivedBooksIdByBooksName(bookName);
     }
 
     @Override
-    public Set<BookDto> findBooksByAuthorNameAndSurname(String name, String surname) throws FindBookByIdWasNotFoundException {
+    public Set<BookDto> getBooksDtoByAuthorNameAndSurname(String name, String surname) throws FindBookByIdWasNotFoundException {
 
-        List<Author> authors = authorService.findAuthorByNameAndSurname(name, surname);
-
-        if (authors.isEmpty()) {
-            throw new FindAuthorByNameAndAndSurnameWasNotFoundException(
-                    "Author with name: " + name +
-                            " surname: " + surname +
-                            " was not found");
-        }
-
+        List<Author> authors = authorService.getAuthorsByNameAndSurname(name, surname);
         Iterator<Author> authorIterator = authors.iterator();
-
         Set<BookDto> booksDto = new HashSet<>();
 
         while (authorIterator.hasNext()) {
-
             Long author_id = authorIterator.next().getId();
-
-            Long book_id = book_authorService
-                    .findBooksIdByAuthorId(author_id)
-                    .orElseThrow(() -> new FindBooksIdByAuthorIdWasNotFoundException(
-                            "book_id with author_id: " + author_id +
-                                    " was not found"
-
-                    ));
-
-            Book book = bookRepository
-                    .findBookById(book_id)
-                    .orElseThrow(
-                            () -> new FindBookByIdWasNotFoundException(
-                                    "Book with id: " + book_id + "was not found")
-                    );
-
-            booksDto.add(findBookByBookNameAndVolume(book.getName(), book.getVolume()));
-
+            Long book_id = book_authorService.getBookIdByAuthorId(author_id);
+            booksDto.add(getBookDtoById(book_id));
         }
-
         return booksDto;
     }
 
     @Override
-    public void deleteBookByBookNameAndVolume(String name, Integer volume) {
-        Book book = findBookByNameAndVolume(name, volume);
-        authorService.deleteAuthorByBook(book);
-        bookRepository.deleteBookByNameAndVolume(name, volume);
-    }
-
-    @Override
-    public Set<BookDto> getBooks(Long fromBookId, Long toBookId) {
+    public Set<BookDto> getBooksDto(Long fromBookId, Long toBookId) {
         Set<BookDto> booksDto = new HashSet<>();
         for(Long i = fromBookId; i <= toBookId; ++i){
             try{
-            booksDto.add(findBookById(i));
+                booksDto.add(getBookDtoById(i));
             }catch (Exception e){
                 logger.info(e.getMessage());
             }
         }
         return booksDto;
     }
-
 }

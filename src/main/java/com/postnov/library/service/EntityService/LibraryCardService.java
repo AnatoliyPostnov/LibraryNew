@@ -1,6 +1,7 @@
 package com.postnov.library.service.EntityService;
 
 import com.postnov.library.Dto.LibraryCardDto;
+import com.postnov.library.Exceptions.FindPassportByPassportNumberAndSeriesWasNotFoundException;
 import com.postnov.library.model.LibraryCard;
 
 import java.util.Map;
@@ -8,22 +9,27 @@ import java.util.Set;
 
 public interface LibraryCardService {
 
-    void saveLibraryCards(Set<LibraryCardDto> libraryCardsDto);
+    void saveLibraryCards(Set<LibraryCardDto> libraryCardsDto) throws FindPassportByPassportNumberAndSeriesWasNotFoundException;
 
-    void deleteLibraryCard(String number, String series);
+    void deleteLibraryCard(String number, String series) throws FindPassportByPassportNumberAndSeriesWasNotFoundException;
 
-    LibraryCardDto getLibraryCardDtoByPassportNumberAndSeries(String number, String series);
+    Map<String, Object> getMapLibraryCardWithLibraryCardDtoByPassportNumberAndSeries(String number, String series) throws FindPassportByPassportNumberAndSeriesWasNotFoundException;
 
-    LibraryCardDto findLibraryCardById(Long id) throws Exception;
+    LibraryCardDto getLibraryCardDtoById(Long id) throws Exception;
 
-    LibraryCard save(LibraryCardDto libraryCardDto);
+    LibraryCard save(LibraryCardDto libraryCardDto) throws FindPassportByPassportNumberAndSeriesWasNotFoundException;
 
-    LibraryCard getLibraryCardIdByPassportNumberAndSeries(String number, String series);
+    LibraryCard getLibraryCardByPassportNumberAndSeries(String number, String series) throws FindPassportByPassportNumberAndSeriesWasNotFoundException;
 
-    Long getLibraryCardIdByLibraryCardDto(LibraryCardDto libraryCardDto);
+    LibraryCard getLibraryCardByClientId(Long clientId);
+
+    LibraryCard getLibraryCardById(Long id) throws Exception;
+
+    Long getLibraryCardIdByLibraryCardDto(LibraryCardDto libraryCardDto) throws FindPassportByPassportNumberAndSeriesWasNotFoundException;
 
     Set<LibraryCardDto> getLibraryCards(Long fromLibraryCardsId, Long toLibraryCardId);
 
     Map<String, Object> getMapLibraryCardWithClientWithPassportByPassportNumberAndSeries(
-            String number, String series);
+            String number, String series) throws FindPassportByPassportNumberAndSeriesWasNotFoundException;
+
 }

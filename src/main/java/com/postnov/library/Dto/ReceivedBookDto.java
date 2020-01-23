@@ -1,8 +1,14 @@
 package com.postnov.library.Dto;
 
+import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 
 public class ReceivedBookDto {
+
+    private LocalDate dateOfBookReceiving;
+
+    private LocalDate dateOfBookReturn;
 
     @NotNull
     private BookDto book;
@@ -24,6 +30,22 @@ public class ReceivedBookDto {
 
     public void setLibraryCard(LibraryCardDto libraryCard) {
         this.libraryCard = libraryCard;
+    }
+
+    public LocalDate getDateOfBookReceiving() {
+        return dateOfBookReceiving;
+    }
+
+    public void setDateOfBookReceiving(LocalDate dateOfBookReceiving) {
+        this.dateOfBookReceiving = dateOfBookReceiving;
+    }
+
+    public LocalDate getDateOfBookReturn() {
+        return dateOfBookReturn;
+    }
+
+    public void setDateOfBookReturn(LocalDate dateOfBookReturn) {
+        this.dateOfBookReturn = dateOfBookReturn;
     }
 
     @Override

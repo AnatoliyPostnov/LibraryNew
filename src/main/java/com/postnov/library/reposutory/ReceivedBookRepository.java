@@ -11,6 +11,10 @@ import java.util.Set;
 
 public interface ReceivedBookRepository extends JpaRepository<ReceivedBook, Long> {
 
+    @Modifying
+    @Query(value = "update ReceivedBook set dateOfBookReturn=:dateOfBookReturn")
+    void returnBook(LocalDate dateOfBookReturn);
+
     @Query(value = "select rb from ReceivedBook rb " +
             "where rb.bookId = :bookId and rb.libraryCardId = :libraryCardId " +
             "and rb.dateOfBookReturn = null")
@@ -20,7 +24,12 @@ public interface ReceivedBookRepository extends JpaRepository<ReceivedBook, Long
             "where rb.libraryCardId = :libraryCardId and rb.dateOfBookReturn = null")
     Set<ReceivedBook> findReceivedBookByLibraryCardId(Long libraryCardId);
 
-    @Modifying
-    @Query(value = "update ReceivedBook set dateOfBookReturn=:dateOfBookReturn")
-    void returnBook(LocalDate dateOfBookReturn);
+    @Query(value = "select rb from ReceivedBook rb " +
+            "where rb.libraryCardId = :libraryCardId")
+    Set<ReceivedBook> findHistoryReceivedBookByLibraryCardId(Long libraryCardId);
+
+    @Query(value = "select rb from ReceivedBook rb " +
+            "where rb.id >= :fromReceivedBookId and rb.id <= :toReceivedBookId and rb.dateOfBookReturn = null")
+    Set<ReceivedBook> findAllReceivedBook(Long fromReceivedBookId, Long toReceivedBookId);
+
 }

@@ -2,6 +2,7 @@ package com.postnov.library.service.EntityService.impl;
 
 import com.postnov.library.Dto.AuthorDto;
 import com.postnov.library.Exceptions.FindAuthorByIdWasNotFoundException;
+import com.postnov.library.Exceptions.FindAuthorByNameAndAndSurnameWasNotFoundException;
 import com.postnov.library.model.Author;
 import com.postnov.library.model.Book;
 import com.postnov.library.reposutory.AuthorRepository;
@@ -41,13 +42,21 @@ public class AuthorServiceImpl implements AuthorService {
             Author author = convertService.convertFromDto(authorDto, Author.class);;
             authors_id.add(authorRepository.save(author).getId());
         }
-        book_authorService.update(authors_id, book_id);
+        book_authorService.saveAuthorsIdAndBookId(authors_id, book_id);
     }
 
     @Override
-    public Set<Author> findAuthorsByBook(Book book) {
+    public void deleteAuthorByBook(Book book) {
+        for (Author author : getAuthorsByBook(book)){
+            book_authorService.deleteBook_AuthorByAuthor_id(author.getId());
+            authorRepository.deleteAuthorById(author.getId());
+        }
+    }
 
-        Set<Long> authors_id = book_authorService.findAuthorsIdByBookId(book.getId());
+    @Override
+    public Set<Author> getAuthorsByBook(Book book) {
+
+        Set<Long> authors_id = book_authorService.getAuthorsIdByBookId(book.getId());
 
         Set<Author> authors = new HashSet<>();
 
@@ -62,16 +71,17 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public List<Author> findAuthorByNameAndSurname(String name, String surname) {
-        return authorRepository.findAuthorByNameAndSurname(name, surname);
-    }
+    public List<Author> getAuthorsByNameAndSurname(String name, String surname) {
 
-    @Override
-    public void deleteAuthorByBook(Book book) {
-        for (Author author : findAuthorsByBook(book)){
-            book_authorService.deleteBook_AuthorByAuthor_id(author.getId());
-            authorRepository.deleteAuthorById(author.getId());
+        List<Author> authors = authorRepository.findAuthorByNameAndSurname(name, surname);
+
+        if (authors.isEmpty()) {
+            throw new FindAuthorByNameAndAndSurnameWasNotFoundException(
+                    "Author with name: " + name +
+                            " surname: " + surname +
+                            " was not found");
         }
+        return authors;
     }
 
 }
