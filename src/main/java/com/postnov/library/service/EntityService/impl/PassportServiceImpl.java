@@ -1,7 +1,8 @@
 package com.postnov.library.service.EntityService.impl;
 
 import com.postnov.library.Dto.PassportDto;
-import com.postnov.library.Exceptions.FindPassportByPassportNumberAndSeriesWasNotFoundException;
+import com.postnov.library.Exceptions.notFoundException.FindPassportByIdWasNotFoundException;
+import com.postnov.library.Exceptions.notFoundException.FindPassportByPassportNumberAndSeriesWasNotFoundException;
 import com.postnov.library.model.Passport;
 import com.postnov.library.reposutory.PassportRepository;
 import com.postnov.library.service.EntityService.PassportService;
@@ -49,16 +50,12 @@ public class PassportServiceImpl implements PassportService {
     public Passport getPassportByPassportNumberAndSeries(String number, String series)
             throws FindPassportByPassportNumberAndSeriesWasNotFoundException {
         return passportRepository.findPassportByNumberAndSeries(number, series).orElseThrow(
-                        () -> new FindPassportByPassportNumberAndSeriesWasNotFoundException
-                                ("Passport with number: " + number +
-                                " series: " + series + " was not found")
-                );
+                        () -> new FindPassportByPassportNumberAndSeriesWasNotFoundException(number, series));
     }
 
     @Override
     public Passport getPassportById(Long Id) {
         return passportRepository.findPassportById(Id).orElseThrow(
-                () -> new RuntimeException("Passport with id: " + Id + "was not found")
-        );
+                () -> new FindPassportByIdWasNotFoundException(Id));
     }
 }

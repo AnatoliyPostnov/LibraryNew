@@ -1,7 +1,7 @@
 package com.postnov.library.controllers;
 
 import com.postnov.library.Dto.LibraryCardDto;
-import com.postnov.library.Exceptions.FindPassportByPassportNumberAndSeriesWasNotFoundException;
+import com.postnov.library.Exceptions.notFoundException.FindPassportByPassportNumberAndSeriesWasNotFoundException;
 import com.postnov.library.service.EntityService.LibraryCardService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -44,14 +44,4 @@ public class LibraryCardController {
             @RequestParam("toLibraryCardsId") Long toLibraryCardId) {
         return libraryCardService.getLibraryCards(fromLibraryCardsId, toLibraryCardId);
     }
-
-    @ResponseStatus(HttpStatus.OK)
-    @DeleteMapping("/libraryCard/by/passport/number/and/series")
-    public void deleteLibraryCardByPassportNumberAndSeries(
-            @RequestParam("number") String number,
-            @RequestParam("series") String series)
-            throws FindPassportByPassportNumberAndSeriesWasNotFoundException {
-        libraryCardService.deleteLibraryCard(number, series);
-    }
-
 }

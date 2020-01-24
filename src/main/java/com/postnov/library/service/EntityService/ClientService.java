@@ -1,7 +1,7 @@
 package com.postnov.library.service.EntityService;
 
 import com.postnov.library.Dto.ClientDto;
-import com.postnov.library.Exceptions.FindPassportByPassportNumberAndSeriesWasNotFoundException;
+import com.postnov.library.Exceptions.notFoundException.FindPassportByPassportNumberAndSeriesWasNotFoundException;
 import com.postnov.library.model.Client;
 
 import java.util.Map;

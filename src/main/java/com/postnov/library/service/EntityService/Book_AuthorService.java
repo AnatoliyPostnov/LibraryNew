@@ -10,7 +10,7 @@ public interface Book_AuthorService {
 
     void saveAuthorsIdAndBookId(List<Long> authors_id, Long book_id);
 
-    void deleteBook_AuthorByAuthor_id(Long author_id);
+    void deleteBook_AuthorByAuthorId(Long author_id);
 
     Long getBookIdByAuthorId(Long author_id);
 

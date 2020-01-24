@@ -1,7 +1,7 @@
 package com.postnov.library.controllers;
 
 import com.postnov.library.Dto.BookDto;
-import com.postnov.library.Exceptions.FindBookByIdWasNotFoundException;
+import com.postnov.library.Exceptions.notFoundException.FindBookByIdWasNotFoundException;
 import com.postnov.library.service.EntityService.BookService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

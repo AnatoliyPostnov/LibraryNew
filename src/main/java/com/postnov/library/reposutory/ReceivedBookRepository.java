@@ -32,4 +32,7 @@ public interface ReceivedBookRepository extends JpaRepository<ReceivedBook, Long
             "where rb.id >= :fromReceivedBookId and rb.id <= :toReceivedBookId and rb.dateOfBookReturn = null")
     Set<ReceivedBook> findAllReceivedBook(Long fromReceivedBookId, Long toReceivedBookId);
 
+    @Query(value = "select rb from ReceivedBook rb where rb.dateOfBookReturn = null")
+    Set<ReceivedBook> findAllReceivedBookForScheduled();
+
 }

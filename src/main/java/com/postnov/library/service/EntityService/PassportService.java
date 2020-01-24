@@ -1,9 +1,7 @@
 package com.postnov.library.service.EntityService;
 
-import com.postnov.library.Dto.BookDto;
 import com.postnov.library.Dto.PassportDto;
-import com.postnov.library.Exceptions.FindPassportByPassportNumberAndSeriesWasNotFoundException;
-import com.postnov.library.model.Book;
+import com.postnov.library.Exceptions.notFoundException.FindPassportByPassportNumberAndSeriesWasNotFoundException;
 import com.postnov.library.model.Passport;
 
 public interface PassportService {

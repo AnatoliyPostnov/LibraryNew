@@ -2,7 +2,9 @@ package com.postnov.library.service.EntityService.impl;
 
 import com.postnov.library.Dto.ClientDto;
 import com.postnov.library.Dto.PassportDto;
-import com.postnov.library.Exceptions.FindPassportByPassportNumberAndSeriesWasNotFoundException;
+import com.postnov.library.Exceptions.notFoundException.FindClientByIdWasNotFoundException;
+import com.postnov.library.Exceptions.notFoundException.FindClientByPassportIdWasNotFoundException;
+import com.postnov.library.Exceptions.notFoundException.FindPassportByPassportNumberAndSeriesWasNotFoundException;
 import com.postnov.library.model.Client;
 import com.postnov.library.model.Passport;
 import com.postnov.library.reposutory.ClientRepository;
@@ -25,7 +27,9 @@ public class ClientServiceImpl implements ClientService {
 
     private final ConvertService<ClientDto, Client> convertServiceClient;
 
-    public ClientServiceImpl(ClientRepository clientRepository, PassportService passportService, ConvertService<ClientDto, Client> convertServiceClient) {
+    public ClientServiceImpl(ClientRepository clientRepository,
+                             PassportService passportService,
+                             ConvertService<ClientDto, Client> convertServiceClient) {
         this.clientRepository = clientRepository;
         this.passportService = passportService;
         this.convertServiceClient = convertServiceClient;
@@ -40,7 +44,6 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public ClientDto getClientDtoById(Long Id) {
         return makeClientDto(getClientById(Id));
-
     }
 
     @Override
@@ -48,7 +51,6 @@ public class ClientServiceImpl implements ClientService {
         PassportDto passportDto = passportService.getPassportDtoById(client.getPassportId());
         ClientDto clientDto = convertServiceClient.convertToDto(client, ClientDto.class);
         clientDto.setPassport(passportDto);
-
         return clientDto;
     }
 
@@ -63,17 +65,13 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public Client getClientByPassportId(Long passportId){
         return clientRepository.findClientByPassportId(passportId).orElseThrow(
-                () -> new RuntimeException("Client with passport_id: " + passportId +
-                        " was not found")
-        );
+                () -> new FindClientByPassportIdWasNotFoundException(passportId));
     }
 
     @Override
     public Client getClientById(Long Id){
         return clientRepository.findClientById(Id).orElseThrow(
-                () -> new RuntimeException("Client with Id: " + Id +
-                        " was not found")
-        );
+                () -> new FindClientByIdWasNotFoundException(Id));
     }
 
     @Override

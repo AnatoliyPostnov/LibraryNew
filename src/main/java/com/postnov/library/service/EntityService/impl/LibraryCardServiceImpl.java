@@ -3,7 +3,10 @@ package com.postnov.library.service.EntityService.impl;
 import com.postnov.library.Dto.ClientDto;
 import com.postnov.library.Dto.LibraryCardDto;
 import com.postnov.library.Dto.PassportDto;
-import com.postnov.library.Exceptions.FindPassportByPassportNumberAndSeriesWasNotFoundException;
+import com.postnov.library.Exceptions.notFoundException.FindLibraryCardByClientIdWasNotFoundException;
+import com.postnov.library.Exceptions.notFoundException.FindLibraryCardByIdWasNotFoundException;
+import com.postnov.library.Exceptions.notFoundException.FindPassportByPassportNumberAndSeriesWasNotFoundException;
+import com.postnov.library.Exceptions.other.LibraryCardImpossibleSaveException;
 import com.postnov.library.model.Client;
 import com.postnov.library.model.LibraryCard;
 import com.postnov.library.model.Passport;
@@ -59,7 +62,6 @@ public class LibraryCardServiceImpl implements LibraryCardService {
     @Override
     public void deleteLibraryCard(String number, String series)
             throws FindPassportByPassportNumberAndSeriesWasNotFoundException {
-        //исправить реализацию
         Map<String, Object> clientWithPassport =
                 clientService.getMapClientWithPassportByPassportNumberAndSeries(number, series);
         Client client = (Client) clientWithPassport.get("Client");
@@ -111,16 +113,13 @@ public class LibraryCardServiceImpl implements LibraryCardService {
             libraryCard.setClientId(clientService.save(libraryCardDto.getClient()).getId());
             return libraryCardRepository.save(libraryCard);
         }
-        throw new RuntimeException(
-                "libraryCard: " + libraryCardDto.toString() + " already exist in database"
-        );
+        throw new LibraryCardImpossibleSaveException(libraryCardDto);
     }
 
     @Override
-    public LibraryCard getLibraryCardById(Long id) {
-        return libraryCardRepository.findLibraryCardById(id).orElseThrow(
-                () -> new RuntimeException("LibraryCard with id: " + id + " was not found")
-        );
+    public LibraryCard getLibraryCardById(Long Id) {
+        return libraryCardRepository.findLibraryCardById(Id).orElseThrow(
+                () -> new FindLibraryCardByIdWasNotFoundException(Id));
     }
 
     @Override
@@ -135,9 +134,7 @@ public class LibraryCardServiceImpl implements LibraryCardService {
     public LibraryCard getLibraryCardByClientId(Long clientId){
         return libraryCardRepository.findLibraryCardByClientId(
                 clientId).orElseThrow(
-                () -> new RuntimeException("LibraryCard with client_id: " + clientId +
-                        " was not found")
-        );
+                () -> new FindLibraryCardByClientIdWasNotFoundException(clientId));
     }
 
     @Override

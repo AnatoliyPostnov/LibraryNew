@@ -1,13 +1,11 @@
 package com.postnov.library.controllers;
 
 import com.postnov.library.Dto.ReceivedBookDto;
-import com.postnov.library.Exceptions.FindPassportByPassportNumberAndSeriesWasNotFoundException;
-import com.postnov.library.model.LibraryCard;
+import com.postnov.library.Exceptions.notFoundException.FindPassportByPassportNumberAndSeriesWasNotFoundException;
 import com.postnov.library.service.EntityService.ReceivedBookService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -61,7 +59,16 @@ public class ReceivedBookController {
     public Set<ReceivedBookDto> getAllReceivedBooks(
             @RequestParam("fromReceivedBookId") Long fromReceivedBookId,
             @RequestParam("toReceivedBookId") Long toReceivedBookId) throws Exception {
-        return receivedBookService.getAllReceivedBook(fromReceivedBookId, toReceivedBookId);
+        return receivedBookService.getAllReceivedBook(fromReceivedBookId, toReceivedBookId, false);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @DeleteMapping("/libraryCard/by/passport/number/and/series")
+    public void deleteLibraryCardByPassportNumberAndSeries(
+            @RequestParam("number") String number,
+            @RequestParam("series") String series)
+            throws FindPassportByPassportNumberAndSeriesWasNotFoundException {
+        receivedBookService.deleteLibraryCard(number, series);
     }
 
 }

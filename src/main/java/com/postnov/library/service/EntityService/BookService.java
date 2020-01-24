@@ -1,7 +1,7 @@
 package com.postnov.library.service.EntityService;
 
 import com.postnov.library.Dto.BookDto;
-import com.postnov.library.Exceptions.FindBookByIdWasNotFoundException;
+import com.postnov.library.Exceptions.notFoundException.FindBookByIdWasNotFoundException;
 import com.postnov.library.model.Book;
 
 import java.util.Set;

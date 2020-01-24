@@ -2,7 +2,10 @@ package com.postnov.library.service.EntityService.impl;
 
 import com.postnov.library.Dto.AuthorDto;
 import com.postnov.library.Dto.BookDto;
-import com.postnov.library.Exceptions.*;
+import com.postnov.library.Exceptions.notFoundException.FindBookByIdWasNotFoundException;
+import com.postnov.library.Exceptions.notFoundException.FindBookByNameAndVolumeWasNotFoundException;
+import com.postnov.library.Exceptions.notFoundException.FindReceivedBookByIdWasNotFoundException;
+import com.postnov.library.Exceptions.notFoundException.FindReceivedBookByNameAndVolumeWasNotFoundException;
 import com.postnov.library.model.Author;
 import com.postnov.library.model.Book;
 import com.postnov.library.reposutory.BookRepository;
@@ -116,39 +119,26 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Book getReceivedBookById(Long Id) {
-        return bookRepository.findReceivedBookById(Id)
-                .orElseThrow(
-                        () -> new FindReceivedBookWasNotFoundException(
-                                "Received book with id: " + Id +
-                                        " was not found exception")
-                );
+        return bookRepository.findReceivedBookById(Id).orElseThrow(
+                () -> new FindReceivedBookByIdWasNotFoundException(Id));
     }
 
     @Override
     public Book getReceivedBookByBookNameAndVolume(String name, Integer volume){
         return bookRepository.findReceivedBookByBookNameAndVolume(name, volume).orElseThrow(
-                () -> new FindReceivedBookWasNotFoundException("Received book with name: " + name +
-                        " volume: " + volume + " was not found exception")
-        );
+                () -> new FindReceivedBookByNameAndVolumeWasNotFoundException(name, volume));
     }
 
     @Override
     public Book getBookByBookNameAndVolume(String name, Integer volume) {
-        return bookRepository.findBookByNameAndVolume(name, volume)
-                .orElseThrow(
-                        () -> new FindBookByNameAndVolumeWasNotFoundException(
-                                "Book with name: " + name +
-                                        "volume: " + volume +
-                                        "was not found")
-                );
+        return bookRepository.findBookByNameAndVolume(name, volume).orElseThrow(
+                () -> new FindBookByNameAndVolumeWasNotFoundException(name, volume));
     }
 
     @Override
     public Book getBookById(Long Id) throws FindBookByIdWasNotFoundException {
-        return bookRepository.findBookById(Id)
-                .orElseThrow(() -> new FindBookByIdWasNotFoundException(
-                        "Book with id: " + Id + " was not found"
-                ));
+        return bookRepository.findBookById(Id).orElseThrow(
+                () -> new FindBookByIdWasNotFoundException(Id));
     }
 
     @Override

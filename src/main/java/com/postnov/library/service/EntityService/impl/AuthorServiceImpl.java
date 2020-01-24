@@ -1,8 +1,8 @@
 package com.postnov.library.service.EntityService.impl;
 
 import com.postnov.library.Dto.AuthorDto;
-import com.postnov.library.Exceptions.FindAuthorByIdWasNotFoundException;
-import com.postnov.library.Exceptions.FindAuthorByNameAndAndSurnameWasNotFoundException;
+import com.postnov.library.Exceptions.notFoundException.FindAuthorByIdWasNotFoundException;
+import com.postnov.library.Exceptions.notFoundException.FindAuthorByNameAndAndSurnameWasNotFoundException;
 import com.postnov.library.model.Author;
 import com.postnov.library.model.Book;
 import com.postnov.library.reposutory.AuthorRepository;
@@ -35,9 +35,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public void saveAuthors(Set<AuthorDto> authors, Long book_id) {
-
         List<Long> authors_id = new ArrayList<>();
-
         for(AuthorDto authorDto : authors){
             Author author = convertService.convertFromDto(authorDto, Author.class);;
             authors_id.add(authorRepository.save(author).getId());
@@ -48,38 +46,27 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public void deleteAuthorByBook(Book book) {
         for (Author author : getAuthorsByBook(book)){
-            book_authorService.deleteBook_AuthorByAuthor_id(author.getId());
+            book_authorService.deleteBook_AuthorByAuthorId(author.getId());
             authorRepository.deleteAuthorById(author.getId());
         }
     }
 
     @Override
     public Set<Author> getAuthorsByBook(Book book) {
-
-        Set<Long> authors_id = book_authorService.getAuthorsIdByBookId(book.getId());
-
+        Set<Long> authorsId = book_authorService.getAuthorsIdByBookId(book.getId());
         Set<Author> authors = new HashSet<>();
-
-        for (Long author_id : authors_id){
-            authors.add(authorRepository.findAuthorById(author_id)
-                    .orElseThrow(() -> new FindAuthorByIdWasNotFoundException(
-                            "Author with" + author_id + "was not found"
-                    )));
+        for (Long authorId : authorsId){
+            authors.add(authorRepository.findAuthorById(authorId)
+                    .orElseThrow(() -> new FindAuthorByIdWasNotFoundException(authorId)));
         }
-
         return authors;
     }
 
     @Override
     public List<Author> getAuthorsByNameAndSurname(String name, String surname) {
-
         List<Author> authors = authorRepository.findAuthorByNameAndSurname(name, surname);
-
         if (authors.isEmpty()) {
-            throw new FindAuthorByNameAndAndSurnameWasNotFoundException(
-                    "Author with name: " + name +
-                            " surname: " + surname +
-                            " was not found");
+            throw new FindAuthorByNameAndAndSurnameWasNotFoundException(name, surname);
         }
         return authors;
     }
