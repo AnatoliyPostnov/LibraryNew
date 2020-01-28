@@ -3,9 +3,9 @@ package com.postnov.library.service.EntityService.impl;
 import com.postnov.library.Dto.AuthorDto;
 import com.postnov.library.Dto.BookDto;
 import com.postnov.library.Exceptions.notFoundException.FindBookByIdWasNotFoundException;
-import com.postnov.library.Exceptions.notFoundException.FindBookByNameAndVolumeWasNotFoundException;
 import com.postnov.library.Exceptions.notFoundException.FindReceivedBookByIdWasNotFoundException;
 import com.postnov.library.Exceptions.notFoundException.FindReceivedBookByNameAndVolumeWasNotFoundException;
+import com.postnov.library.Exceptions.notFoundException.FindReturnBookByNameAndVolumeWasNotFoundException;
 import com.postnov.library.model.Author;
 import com.postnov.library.model.Book;
 import com.postnov.library.reposutory.BookRepository;
@@ -18,10 +18,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 @Service
-@Transactional
 public class BookServiceImpl implements BookService {
 
     private final Logger logger = LoggerFactory.getLogger(BookServiceImpl.class);
@@ -49,6 +51,7 @@ public class BookServiceImpl implements BookService {
         this.book_authorService = book_authorService;
     }
 
+    @Transactional
     @Override
     public void saveBooks(Set<BookDto> booksDto) {
 
@@ -66,19 +69,21 @@ public class BookServiceImpl implements BookService {
         }
     }
 
+    @Transactional
     @Override
-    public void deleteBookByBookNameAndVolume(String name, Integer volume) {
-        Book book = getBookByBookNameAndVolume(name, volume);
+    public void deleteBookByBook(Book book) {
         authorService.deleteAuthorByBook(book);
-        bookRepository.deleteBookByNameAndVolume(name, volume);
+        bookRepository.deleteBookByNameAndVolume(book.getName(), book.getVolume());
     }
 
+    @Transactional
     @Override
     public void receivedBook(BookDto bookDto) {
         Long Id = getBookByBookNameAndVolume(bookDto.getName(), bookDto.getVolume()).getId();
         bookRepository.receivedBookById(Id);
     }
 
+    @Transactional
     @Override
     public void returnBook(Long bookId) {
         bookRepository.returnBook(bookId);
@@ -105,7 +110,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public BookDto makeBookDto(Book book){
+    public BookDto makeBookDto(Book book) {
         BookDto bookDto = convertServiceBook.convertToDto(book,
                 BookDto.class);
 
@@ -117,24 +122,28 @@ public class BookServiceImpl implements BookService {
         return bookDto;
     }
 
+    @Transactional
     @Override
     public Book getReceivedBookById(Long Id) {
         return bookRepository.findReceivedBookById(Id).orElseThrow(
                 () -> new FindReceivedBookByIdWasNotFoundException(Id));
     }
 
+    @Transactional
     @Override
-    public Book getReceivedBookByBookNameAndVolume(String name, Integer volume){
+    public Book getReceivedBookByBookNameAndVolume(String name, Integer volume) {
         return bookRepository.findReceivedBookByBookNameAndVolume(name, volume).orElseThrow(
                 () -> new FindReceivedBookByNameAndVolumeWasNotFoundException(name, volume));
     }
 
+    @Transactional
     @Override
     public Book getBookByBookNameAndVolume(String name, Integer volume) {
-        return bookRepository.findBookByNameAndVolume(name, volume).orElseThrow(
-                () -> new FindBookByNameAndVolumeWasNotFoundException(name, volume));
+        return bookRepository.findReturnBookByNameAndVolume(name, volume).orElseThrow(
+                () -> new FindReturnBookByNameAndVolumeWasNotFoundException(name, volume));
     }
 
+    @Transactional
     @Override
     public Book getBookById(Long Id) throws FindBookByIdWasNotFoundException {
         return bookRepository.findBookById(Id).orElseThrow(
@@ -146,6 +155,7 @@ public class BookServiceImpl implements BookService {
         return getBookByBookNameAndVolume(bookDto.getName(), bookDto.getVolume()).getId();
     }
 
+    @Transactional
     @Override
     public Set<Long> getReceivedBooksIdByBookName(String bookName) {
         return bookRepository.findReceivedBooksIdByBooksName(bookName);
@@ -169,10 +179,10 @@ public class BookServiceImpl implements BookService {
     @Override
     public Set<BookDto> getBooksDto(Long fromBookId, Long toBookId) {
         Set<BookDto> booksDto = new HashSet<>();
-        for(Long i = fromBookId; i <= toBookId; ++i){
-            try{
+        for (Long i = fromBookId; i <= toBookId; ++i) {
+            try {
                 booksDto.add(getBookDtoById(i));
-            }catch (Exception e){
+            } catch (Exception e) {
                 logger.info(e.getMessage());
             }
         }

@@ -16,5 +16,6 @@ public interface PassportService {
 
     Passport save(PassportDto passportDto);
 
-    Passport getPassportByPassportNumberAndSeries(String number, String series) throws FindPassportByPassportNumberAndSeriesWasNotFoundException;
+    Passport getPassportByPassportNumberAndSeries(String number, String series)
+            throws FindPassportByPassportNumberAndSeriesWasNotFoundException;
 }

@@ -1,12 +1,22 @@
 package com.postnov.library.Dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class ReceivedBookDto {
 
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate dateOfBookReceiving;
 
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate dateOfBookReturn;
 
     @NotNull
@@ -53,5 +63,21 @@ public class ReceivedBookDto {
                 "book=" + book +
                 ", libraryCard=" + libraryCard +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ReceivedBookDto that = (ReceivedBookDto) o;
+        return Objects.equals(dateOfBookReceiving, that.dateOfBookReceiving) &&
+                Objects.equals(dateOfBookReturn, that.dateOfBookReturn) &&
+                Objects.equals(book, that.book) &&
+                Objects.equals(libraryCard, that.libraryCard);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(dateOfBookReceiving, dateOfBookReturn, book, libraryCard);
     }
 }

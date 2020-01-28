@@ -4,6 +4,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.Objects;
 
 public class ClientDto implements Serializable {
 
@@ -50,5 +51,20 @@ public class ClientDto implements Serializable {
                 ", email='" + email + '\'' +
                 ", passport=" + passport +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ClientDto clientDto = (ClientDto) o;
+        return Objects.equals(phone, clientDto.phone) &&
+                Objects.equals(email, clientDto.email) &&
+                Objects.equals(passport, clientDto.passport);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(phone, email, passport);
     }
 }

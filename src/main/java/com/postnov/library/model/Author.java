@@ -29,7 +29,7 @@ public class Author {
         this.birthday = birthday;
     }
 
-    public Author(){
+    public Author() {
 
     }
 

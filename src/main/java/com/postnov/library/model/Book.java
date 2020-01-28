@@ -33,7 +33,9 @@ public class Book {
         isReceivedBook = false;
     }
 
-    public Book(){isReceivedBook = false;}
+    public Book() {
+        isReceivedBook = false;
+    }
 
     public Long getId() {
         return id;

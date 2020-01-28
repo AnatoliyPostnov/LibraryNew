@@ -33,7 +33,8 @@ public class Passport implements Serializable {
     @Column
     private LocalDate dateSigning;
 
-    public Passport() {}
+    public Passport() {
+    }
 
     public Passport(String name,
                     String surname,

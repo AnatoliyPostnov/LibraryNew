@@ -15,7 +15,8 @@ public class Book_Author {
     @Column
     private Long author_id;
 
-    public Book_Author(){}
+    public Book_Author() {
+    }
 
     public Book_Author(Long book_id, Long author_id) {
         this.book_id = book_id;

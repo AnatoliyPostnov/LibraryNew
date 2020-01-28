@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-@Transactional
 public class ClientServiceImpl implements ClientService {
 
     private final ClientRepository clientRepository;
@@ -35,6 +34,7 @@ public class ClientServiceImpl implements ClientService {
         this.convertServiceClient = convertServiceClient;
     }
 
+    @Transactional
     @Override
     public void deleteClient(Client client) {
         clientRepository.delete(client);
@@ -54,7 +54,7 @@ public class ClientServiceImpl implements ClientService {
         return clientDto;
     }
 
-
+    @Transactional
     @Override
     public Client save(ClientDto clientDto) {
         Client client = convertServiceClient.convertFromDto(clientDto, Client.class);
@@ -62,14 +62,16 @@ public class ClientServiceImpl implements ClientService {
         return clientRepository.save(client);
     }
 
+    @Transactional
     @Override
-    public Client getClientByPassportId(Long passportId){
+    public Client getClientByPassportId(Long passportId) {
         return clientRepository.findClientByPassportId(passportId).orElseThrow(
                 () -> new FindClientByPassportIdWasNotFoundException(passportId));
     }
 
+    @Transactional
     @Override
-    public Client getClientById(Long Id){
+    public Client getClientById(Long Id) {
         return clientRepository.findClientById(Id).orElseThrow(
                 () -> new FindClientByIdWasNotFoundException(Id));
     }

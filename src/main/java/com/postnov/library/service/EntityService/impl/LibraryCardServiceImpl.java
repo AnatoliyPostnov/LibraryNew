@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Set;
 
 @Service
-@Transactional
 public class LibraryCardServiceImpl implements LibraryCardService {
 
     private final Logger logger = LoggerFactory.getLogger(BookServiceImpl.class);
@@ -54,11 +53,12 @@ public class LibraryCardServiceImpl implements LibraryCardService {
 
     @Override
     public void saveLibraryCards(Set<LibraryCardDto> libraryCardsDto) {
-        for(LibraryCardDto libraryCardDto : libraryCardsDto){
+        for (LibraryCardDto libraryCardDto : libraryCardsDto) {
             save(libraryCardDto);
         }
     }
 
+    @Transactional
     @Override
     public void deleteLibraryCard(String number, String series)
             throws FindPassportByPassportNumberAndSeriesWasNotFoundException {
@@ -103,11 +103,12 @@ public class LibraryCardServiceImpl implements LibraryCardService {
         return libraryCardDto;
     }
 
+    @Transactional
     @Override
-    public LibraryCard save(LibraryCardDto libraryCardDto){
+    public LibraryCard save(LibraryCardDto libraryCardDto) {
         try {
             getLibraryCardIdByLibraryCardDto(libraryCardDto);
-        }catch (FindPassportByPassportNumberAndSeriesWasNotFoundException e){
+        } catch (FindPassportByPassportNumberAndSeriesWasNotFoundException e) {
             LibraryCard libraryCard = convertServiceLibraryCard
                     .convertFromDto(libraryCardDto, LibraryCard.class);
             libraryCard.setClientId(clientService.save(libraryCardDto.getClient()).getId());
@@ -116,6 +117,7 @@ public class LibraryCardServiceImpl implements LibraryCardService {
         throw new LibraryCardImpossibleSaveException(libraryCardDto);
     }
 
+    @Transactional
     @Override
     public LibraryCard getLibraryCardById(Long Id) {
         return libraryCardRepository.findLibraryCardById(Id).orElseThrow(
@@ -130,8 +132,9 @@ public class LibraryCardServiceImpl implements LibraryCardService {
         return (LibraryCard) mapLibraryCardWithClientWithPassport.get("LibraryCard");
     }
 
+    @Transactional
     @Override
-    public LibraryCard getLibraryCardByClientId(Long clientId){
+    public LibraryCard getLibraryCardByClientId(Long clientId) {
         return libraryCardRepository.findLibraryCardByClientId(
                 clientId).orElseThrow(
                 () -> new FindLibraryCardByClientIdWasNotFoundException(clientId));
@@ -150,10 +153,10 @@ public class LibraryCardServiceImpl implements LibraryCardService {
     @Override
     public Set<LibraryCardDto> getLibraryCards(Long fromLibraryCardsId, Long toLibraryCardId) {
         Set<LibraryCardDto> libraryCardsDto = new HashSet<>();
-        for (Long i = fromLibraryCardsId; i <= toLibraryCardId; ++i){
+        for (Long i = fromLibraryCardsId; i <= toLibraryCardId; ++i) {
             try {
                 libraryCardsDto.add(getLibraryCardDtoById(i));
-            }catch (Exception e){
+            } catch (Exception e) {
                 logger.info(e.getMessage());
             }
         }

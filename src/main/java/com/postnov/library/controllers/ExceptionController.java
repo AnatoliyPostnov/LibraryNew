@@ -20,7 +20,7 @@ public class ExceptionController {
             FindAuthorByIdWasNotFoundException.class,
             FindBooksIdByAuthorIdWasNotFoundException.class,
             FindAuthorByNameAndAndSurnameWasNotFoundException.class,
-            FindBookByNameAndVolumeWasNotFoundException.class,
+            FindReturnBookByNameAndVolumeWasNotFoundException.class,
             FindClientByIdWasNotFoundException.class,
             FindLibraryCardByClientIdWasNotFoundException.class,
             FindBookByIdWasNotFoundException.class,

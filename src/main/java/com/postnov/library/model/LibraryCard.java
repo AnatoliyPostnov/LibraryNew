@@ -14,7 +14,8 @@ public class LibraryCard implements Serializable {
     @Column
     private Long clientId;
 
-    public LibraryCard(){}
+    public LibraryCard() {
+    }
 
     public LibraryCard(Long id, Long clientId) {
         this.id = id;

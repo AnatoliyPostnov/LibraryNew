@@ -1,9 +1,15 @@
 package com.postnov.library.Dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class PassportDto {
 
@@ -29,10 +35,14 @@ public class PassportDto {
 
     @NotNull
     @Past
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate birthday;
 
     @NotNull
     @Past
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate dateSigning;
 
     public LocalDate getBirthday() {
@@ -102,6 +112,25 @@ public class PassportDto {
                 ", birthday=" + birthday +
                 ", dateSigning=" + dateSigning +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PassportDto that = (PassportDto) o;
+        return Objects.equals(name, that.name) &&
+                Objects.equals(surname, that.surname) &&
+                Objects.equals(number, that.number) &&
+                Objects.equals(series, that.series) &&
+                Objects.equals(authorityIssuer, that.authorityIssuer) &&
+                Objects.equals(birthday, that.birthday) &&
+                Objects.equals(dateSigning, that.dateSigning);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, surname, number, series, authorityIssuer, birthday, dateSigning);
     }
 }
 

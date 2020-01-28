@@ -6,6 +6,7 @@ import com.postnov.library.service.EntityService.ReceivedBookService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -47,7 +48,7 @@ public class ReceivedBookController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/history/received/books/by/passport/number/and/series")
-    public Set<ReceivedBookDto> getHistoryReceivedBooksByPassportNumberAndSeries(
+    public List<ReceivedBookDto> getHistoryReceivedBooksByPassportNumberAndSeries(
             @RequestParam("number") String number,
             @RequestParam("series") String series)
             throws FindPassportByPassportNumberAndSeriesWasNotFoundException {
@@ -71,4 +72,11 @@ public class ReceivedBookController {
         receivedBookService.deleteLibraryCard(number, series);
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping(value = "/book/by/name/and/volume")
+    public void deletedBookByBookNameAndVolume(
+            @RequestParam("name") String name,
+            @RequestParam("volume") Integer volume) {
+        receivedBookService.deleteBookByBookNameAndVolume(name, volume);
+    }
 }

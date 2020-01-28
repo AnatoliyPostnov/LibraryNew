@@ -1,9 +1,6 @@
 package com.postnov.library.service.EntityService;
 
-import com.postnov.library.model.Book;
-
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 public interface Book_AuthorService {

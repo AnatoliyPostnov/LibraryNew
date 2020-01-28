@@ -22,7 +22,8 @@ public class ReceivedBook {
     @Column
     private Long libraryCardId;
 
-    public ReceivedBook(){}
+    public ReceivedBook() {
+    }
 
     public ReceivedBook(Long id,
                         Long bookId,

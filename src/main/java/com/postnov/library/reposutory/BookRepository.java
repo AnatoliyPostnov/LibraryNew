@@ -13,8 +13,12 @@ import java.util.Set;
 public interface BookRepository extends JpaRepository<Book, Long> {
 
     @Query(value = "select b from Book b " +
-            "WHERE b.name = :bookName and b.volume = :volume and b.isReceivedBook = 'false'")
+            "WHERE b.name = :bookName and b.volume = :volume")
     Optional<Book> findBookByNameAndVolume(String bookName, Integer volume);
+
+    @Query(value = "select b from Book b " +
+            "WHERE b.name = :bookName and b.volume = :volume and b.isReceivedBook = 'false'")
+    Optional<Book> findReturnBookByNameAndVolume(String bookName, Integer volume);
 
     @Query(value = "select b from Book b " +
             "WHERE b.name = :bookName and b.volume = :volume and b.isReceivedBook = 'true'")

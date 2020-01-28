@@ -21,7 +21,7 @@ public class BookController {
     @GetMapping(value = "book/by/name/and/volume")
     public BookDto getBookByNameAndVolume(
             @RequestParam("name") String name,
-            @RequestParam("volume") Integer volume){
+            @RequestParam("volume") Integer volume) {
         return bookService.getBookDtoByBookNameAndVolume(name, volume);
     }
 
@@ -48,13 +48,4 @@ public class BookController {
             @RequestBody Set<BookDto> booksDto) {
         bookService.saveBooks(booksDto);
     }
-
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @DeleteMapping(value = "/book/by/name/and/volume")
-    public void deletedBookByBookNameAndVolume(
-            @RequestParam("name") String name,
-            @RequestParam("volume") Integer volume) {
-        bookService.deleteBookByBookNameAndVolume(name, volume);
-    }
-
 }

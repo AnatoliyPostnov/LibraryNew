@@ -12,10 +12,12 @@ import com.postnov.library.service.OtherService.ConvertService;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Service
-@Transactional
 public class AuthorServiceImpl implements AuthorService {
 
     private final AuthorRepository authorRepository;
@@ -33,35 +35,39 @@ public class AuthorServiceImpl implements AuthorService {
         this.book_authorService = book_authorService;
     }
 
+    @Transactional
     @Override
     public void saveAuthors(Set<AuthorDto> authors, Long book_id) {
         List<Long> authors_id = new ArrayList<>();
-        for(AuthorDto authorDto : authors){
-            Author author = convertService.convertFromDto(authorDto, Author.class);;
+        for (AuthorDto authorDto : authors) {
+            Author author = convertService.convertFromDto(authorDto, Author.class);
             authors_id.add(authorRepository.save(author).getId());
         }
         book_authorService.saveAuthorsIdAndBookId(authors_id, book_id);
     }
 
+    @Transactional
     @Override
     public void deleteAuthorByBook(Book book) {
-        for (Author author : getAuthorsByBook(book)){
+        for (Author author : getAuthorsByBook(book)) {
             book_authorService.deleteBook_AuthorByAuthorId(author.getId());
             authorRepository.deleteAuthorById(author.getId());
         }
     }
 
+    @Transactional
     @Override
     public Set<Author> getAuthorsByBook(Book book) {
         Set<Long> authorsId = book_authorService.getAuthorsIdByBookId(book.getId());
         Set<Author> authors = new HashSet<>();
-        for (Long authorId : authorsId){
+        for (Long authorId : authorsId) {
             authors.add(authorRepository.findAuthorById(authorId)
                     .orElseThrow(() -> new FindAuthorByIdWasNotFoundException(authorId)));
         }
         return authors;
     }
 
+    @Transactional
     @Override
     public List<Author> getAuthorsByNameAndSurname(String name, String surname) {
         List<Author> authors = authorRepository.findAuthorByNameAndSurname(name, surname);

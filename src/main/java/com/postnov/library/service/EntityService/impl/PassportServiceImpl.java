@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 
 @Service
-@Transactional
 public class PassportServiceImpl implements PassportService {
 
     private final PassportRepository passportRepository;
@@ -40,19 +39,22 @@ public class PassportServiceImpl implements PassportService {
         return convertServicePassport.convertToDto(passport, PassportDto.class);
     }
 
+    @Transactional
     @Override
     public Passport save(PassportDto passportDto) {
         Passport passport = convertServicePassport.convertFromDto(passportDto, Passport.class);
         return passportRepository.save(passport);
     }
 
+    @Transactional
     @Override
     public Passport getPassportByPassportNumberAndSeries(String number, String series)
             throws FindPassportByPassportNumberAndSeriesWasNotFoundException {
         return passportRepository.findPassportByNumberAndSeries(number, series).orElseThrow(
-                        () -> new FindPassportByPassportNumberAndSeriesWasNotFoundException(number, series));
+                () -> new FindPassportByPassportNumberAndSeriesWasNotFoundException(number, series));
     }
 
+    @Transactional
     @Override
     public Passport getPassportById(Long Id) {
         return passportRepository.findPassportById(Id).orElseThrow(

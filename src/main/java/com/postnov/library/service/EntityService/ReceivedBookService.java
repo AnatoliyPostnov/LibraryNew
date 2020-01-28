@@ -3,6 +3,7 @@ package com.postnov.library.service.EntityService;
 import com.postnov.library.Dto.ReceivedBookDto;
 import com.postnov.library.Exceptions.notFoundException.FindPassportByPassportNumberAndSeriesWasNotFoundException;
 
+import java.util.List;
 import java.util.Set;
 
 public interface ReceivedBookService {
@@ -16,12 +17,17 @@ public interface ReceivedBookService {
     Set<ReceivedBookDto> getReceivedBooksByPassportNumberAndSeries(String number, String series)
             throws FindPassportByPassportNumberAndSeriesWasNotFoundException;
 
-    Set<ReceivedBookDto> getHistoryReceivedBooksByPassportNumberAndSeries(
+    List<ReceivedBookDto> getHistoryReceivedBooksByPassportNumberAndSeries(
             String number, String series) throws FindPassportByPassportNumberAndSeriesWasNotFoundException;
 
-    Set<ReceivedBookDto> getAllReceivedBook(Long fromReceivedBookId, Long toReceivedBookId, Boolean scheduled) throws Exception;
+    Set<ReceivedBookDto> getAllReceivedBook(Long fromReceivedBookId, Long toReceivedBookId, Boolean scheduled)
+            throws Exception;
 
-    Set<ReceivedBookDto> getReceivedBooks(String number, String series, Boolean historyOrNot) throws FindPassportByPassportNumberAndSeriesWasNotFoundException;
+    List<ReceivedBookDto> getReceivedBooks(String number, String series, Boolean historyOrNot)
+            throws FindPassportByPassportNumberAndSeriesWasNotFoundException;
 
-    void deleteLibraryCard(String number, String series) throws FindPassportByPassportNumberAndSeriesWasNotFoundException;
+    void deleteLibraryCard(String number, String series)
+            throws FindPassportByPassportNumberAndSeriesWasNotFoundException;
+
+    void deleteBookByBookNameAndVolume(String name, Integer volume);
 }

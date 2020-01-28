@@ -10,7 +10,7 @@ public interface BookService {
 
     void saveBooks(Set<BookDto> booksDto);
 
-    void deleteBookByBookNameAndVolume(String name, Integer volume);
+    void deleteBookByBook(Book book);
 
     void receivedBook(BookDto bookDto);
 

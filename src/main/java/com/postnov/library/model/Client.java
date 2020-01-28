@@ -20,7 +20,7 @@ public class Client implements Serializable {
     @Column
     private Long passportId;
 
-    public Client(){
+    public Client() {
     }
 
     public Client(String phone, String email, Long passportId) {

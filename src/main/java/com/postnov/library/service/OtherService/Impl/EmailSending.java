@@ -11,7 +11,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -20,7 +21,7 @@ import java.util.Set;
 @Service
 @Transactional
 @EnableScheduling
-public class EmailSending{
+public class EmailSending {
 
     private static final Long MILLISECONDS_MONTH = 2592000000L;
 
@@ -52,7 +53,7 @@ public class EmailSending{
     private void executeTask() throws Exception {
         List<LibraryCardDto> libraryCardsDto = new ArrayList<>();
 
-        for (ReceivedBookDto receivedBookDto : receivedBookService.getAllReceivedBook(0L,0L, true)) {
+        for (ReceivedBookDto receivedBookDto : receivedBookService.getAllReceivedBook(0L, 0L, true)) {
             if (!libraryCardsDto.contains(receivedBookDto.getLibraryCard())) {
                 libraryCardsDto.add(receivedBookDto.getLibraryCard());
             }
@@ -67,13 +68,15 @@ public class EmailSending{
             for (ReceivedBookDto receivedBookDto : receivedBookService.getReceivedBooksByPassportNumberAndSeries(
                     libraryCardDto.getClient().getPassport().getNumber(),
                     libraryCardDto.getClient().getPassport().getSeries())) {
-                    LocalDate localDate = LocalDate.now();
-                if (localDate.getYear() - receivedBookDto.getDateOfBookReceiving().getYear() > 0 ||
-                    ) {
-                    receivedBooks.add(receivedBook);
+                LocalDateTime timeNow = LocalDateTime.now();
+                LocalDateTime timeDateOfBookReceiving = LocalDateTime.of(receivedBookDto.getDateOfBookReceiving(), LocalTime.now());
+
+                if (timeNow.getYear() != timeDateOfBookReceiving.getYear() ||
+                        timeNow.getDayOfYear() - timeDateOfBookReceiving.getDayOfYear() >=
+                                timeNow.getDayOfMonth()) {
+                    receivedBooksDtoByLibraryCard.add(receivedBookDto);
                 }
             }
-
 
             if (receivedBooksDtoByLibraryCard.isEmpty()) {
                 continue;
@@ -81,13 +84,12 @@ public class EmailSending{
 
             send(
                     libraryCardDto.getClient().getEmail(),
-                    "From library",
+                    "Message from library",
                     getMessage(libraryCardDto, receivedBooksDtoByLibraryCard));
-
         }
     }
 
-    private String getMessage(LibraryCardDto libraryCardDto, Set<ReceivedBookDto> receivedBooksDtoByLibraryCard){
+    private String getMessage(LibraryCardDto libraryCardDto, Set<ReceivedBookDto> receivedBooksDtoByLibraryCard) {
         StringBuilder message = new StringBuilder("Уважаемый " +
                 libraryCardDto.getClient().getPassport().getName() + " " +
                 libraryCardDto.getClient().getPassport().getSurname() +

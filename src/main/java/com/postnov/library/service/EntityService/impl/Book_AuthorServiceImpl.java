@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Set;
 
 @Service
-@Transactional
 public class Book_AuthorServiceImpl implements Book_AuthorService {
 
     private final Book_AuthorRepository book_authorRepository;
@@ -20,27 +19,30 @@ public class Book_AuthorServiceImpl implements Book_AuthorService {
         this.book_authorRepository = book_authorRepository;
     }
 
+    @Transactional
     @Override
     public void saveAuthorsIdAndBookId(List<Long> authorsId, Long bookId) {
-        for (Long authorId : authorsId){
+        for (Long authorId : authorsId) {
             book_authorRepository.save(new Book_Author(bookId, authorId));
         }
     }
 
+    @Transactional
     @Override
     public Set<Long> getAuthorsIdByBookId(Long bookId) {
         return book_authorRepository.findAuthorsIdByBookId(bookId);
     }
 
+    @Transactional
     @Override
     public Long getBookIdByAuthorId(Long authorId) {
         return book_authorRepository.findBooksIdByAuthorId(authorId)
                 .orElseThrow(() -> new FindBooksIdByAuthorIdWasNotFoundException(authorId));
     }
 
+    @Transactional
     @Override
     public void deleteBook_AuthorByAuthorId(Long author_id) {
         book_authorRepository.deleteBook_AuthorByAuthor_id(author_id);
     }
-
 }
