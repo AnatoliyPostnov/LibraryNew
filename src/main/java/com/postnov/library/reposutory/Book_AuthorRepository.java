@@ -14,12 +14,15 @@ import java.util.Set;
 public interface Book_AuthorRepository extends JpaRepository<Book_Author, Long> {
 
     @Query("SELECT ba.author_id FROM Book_Author ba WHERE ba.book_id = :book_id")
-    Set<Long> findAuthorsIdByBookId(@Param("book_id") Long book_id);
+    Set<Long> findAuthorsIdByBookId(
+            @Param("book_id") Long book_id);
 
     @Query("SELECT ba.book_id FROM Book_Author ba WHERE ba.author_id = :author_id")
-    Optional<Long> findBooksIdByAuthorId(Long author_id);
+    Optional<Long> findBooksIdByAuthorId(
+            @Param("author_id") Long author_id);
 
     @Modifying
     @Query(value = "delete from Book_Author WHERE author_id = :author_id")
-    void deleteBook_AuthorByAuthor_id(@Param("author_id") Long author_id);
+    void deleteBook_AuthorByAuthor_id(
+            @Param("author_id") Long author_id);
 }
